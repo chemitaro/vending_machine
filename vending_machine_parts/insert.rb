@@ -5,7 +5,11 @@ class Insert
     @slot_money = 0
     # @salse_management = SalseManagement.new
   end
+<<<<<<< HEAD
   def money_judgement(value)
+=======
+  def money_judgement(value) 
+>>>>>>> 739feecab2b46d7fb284d218ed946cdcff288b14
     MONEY.include?(value)
     #   @slot_money += value
     # else
@@ -25,4 +29,8 @@ class Insert
   # def slot_money
   #   print @slot_money
   # end
+<<<<<<< HEAD
 end
+=======
+end
+>>>>>>> 739feecab2b46d7fb284d218ed946cdcff288b14
