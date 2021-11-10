@@ -1,5 +1,5 @@
 class Stock
-  atter_reader :stock_count, :drink_stock
+  attr_reader :stock_count, :drink_stock
   def initialize(count) #自販機の箱（ボタン）の数を引数として取り込み、データ型：integer 入力制限：1 ~ 20
     #配列内配列
     @stock_count = count
