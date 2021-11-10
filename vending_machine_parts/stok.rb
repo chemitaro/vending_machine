@@ -1,5 +1,5 @@
 class Stock
-  atter_reader :stock_count, :drink_stock
+  attr_reader :stock_count, :drink_stock
   def initialize(count) #自販機の箱（ボタン）の数を引数として取り込み、データ型：integer 入力制限：1 ~ 20
     #配列内配列
     @stock_count = count
@@ -38,6 +38,20 @@ class Stock
       @drink_stock[stock_position] == []
     else
       return false
+    end
+  end
+  def drink_name(stock_position, drink_data)
+    if @drink_stock[stock_position]
+      drink_data[@drink_stock[stock_position][0]][:name]
+    else
+      false
+    end
+  end
+  def drink_price(stock_position, drink_data)
+    if @drink_stock[stock_position]
+      drink_data[@drink_stock[stock_position][0]][:price]
+    else
+      false
     end
   end
   def drink_buyable_judgement(stock_position, drink_data, slot_money) # 引数を追加しました! データ型：(symbol, hash *@priduct.drink_data, integer *@insert.slot_money  )
@@ -80,28 +94,28 @@ class Stock
       end
       drink_list << drink_box
     end
-    # [[:A, 1,  "コーラ", 120, 15]...]
-    # "[A] [購入可能] 商品名：コーラ　値段：120円"
-    drink_list.each do |position, status, name, price, count|
-      msg = ""
-      case status
-      when 1
-        msg = "購入可能"
-      when 2
-        msg = "お金不足"
-      when 3
-        msg = "品切れ　"
-      when 4
-        msg = "販売中止"
-      else
-        msg = "エラー　"
-      end
-      puts "[#{position.to_s} #{msg}] 商品名：「#{name}」 価格：#{price}円 数量：#{count}本 "
-    end
+    # # [[:A, 1,  "コーラ", 120, 15]...]
+    # # "[A] [購入可能] 商品名：コーラ　値段：120円"
+    # drink_list.each do |position, status, name, price, count|
+    #   msg = ""
+    #   case status
+    #   when 1
+    #     msg = "購入可能"
+    #   when 2
+    #     msg = "お金不足"
+    #   when 3
+    #     msg = "品切れ　"
+    #   when 4
+    #     msg = "販売中止"
+    #   else
+    #     msg = "エラー　"
+    #   end
+    #   puts "[#{position.to_s} #{msg}] 商品名：「#{name}」 価格：#{price}円 数量：#{count}本 "
+    # end
   end
 end
 
-# drink_data = {:d001=>{:name=>"コーラ", :price=>120}, :d002=>{:name=>"水", :price=>100}, :d003=>{:name=>"レッドブル", :price=>200}}
+drink_data = {:d001=>{:name=>"コーラ", :price=>120}, :d002=>{:name=>"水", :price=>100}, :d003=>{:name=>"レッドブル", :price=>200}}
 
 # st = Stock.new(10)
 

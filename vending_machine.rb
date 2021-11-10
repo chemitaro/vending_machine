@@ -301,8 +301,8 @@ class VendingMachine
       #購入可能なら
       @stock.drink_decrease(user_input, 1)
       #本数を減らす
-      price = @product.drink_data[@stock.drink_stock[user_input][0]][:price]
-      #price = drink_price(user_input, @product.drink_data)
+      # price = @product.drink_data[@stock.drink_stock[user_input][0]][:price]
+      price = drink_price(user_input, @product.drink_data)
       #金額取得、要改善
       @insert.money_decrease(price)
       #投入金額を商品代金分減らす
@@ -311,8 +311,8 @@ class VendingMachine
       @my_orders << "#{@product.drink_data[@stock.drink_stock[user_input][0]][:name]}"
       #購入品名を購入品一覧に格納
 
-      "\nガコン！ #{@product.drink_data[@stock.drink_stock[user_input][0]][:name]}を購入しました"
-      #"\nガコン！　#{@product.drink_name(user_input, @product.drink_data)}を購入"
+      # "\nガコン！ #{@product.drink_data[@stock.drink_stock[user_input][0]][:name]}を購入しました"
+      "\nガコン！　#{@product.drink_name(user_input, @product.drink_data)}を購入しました"
 
     when 2
       "\n投入代金が不足しています"
