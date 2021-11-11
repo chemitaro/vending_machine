@@ -34,7 +34,7 @@ class Stock
     end
   end
   def drink_delete(stock_position)
-    if stock_position_condition(stock_position)
+    if stock_position_condition(stock_position) == 1 || stock_position_condition(stock_position) == 2
       @drink_stock[stock_position] = []
     else
       return false
@@ -108,7 +108,6 @@ class Stock
     # 1:ドリンクが存在する 1本以上
     # 2:ドリンクが品切れ 0本
     # 3:ドリンクが存在しない, 未設定
-    # 4:positionが存在しない
+    # false:positionが存在しない
   end
 end
-
