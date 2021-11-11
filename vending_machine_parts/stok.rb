@@ -1,5 +1,5 @@
 class Stock
-  atter_reader :stock_count, :drink_stock
+  attr_reader :stock_count, :drink_stock
   def initialize(count) #自販機の箱（ボタン）の数を引数として取り込み、データ型：integer 入力制限：1 ~ 20
     #配列内配列
     @stock_count = count
@@ -13,35 +13,35 @@ class Stock
     drink_addition(:A, :d001, 5)
   end
   def drink_addition(stock_position, drink_number, count) # 引数のデータ型（symbol, symbol, integer）
-    if @drink_stock[stock_position]
+    if stock_position_condition(stock_position)
       @drink_stock[stock_position] = [drink_number, count] # 既存の値があっても上書きになります。
     else
       return false
     end
   end
   def drink_increase(stock_position, count) # 引数のデータ型:(symbol, integer)
-    if @drink_stock[stock_position][1] >= 0 && @drink_stock[stock_position]
+    if stock_position_condition(stock_position) == 1 || stock_position_condition(stock_position) == 2
       @drink_stock[stock_position][1] += count
     else
       return false
     end
   end
   def drink_decrease(stock_position, count) # 引数のデータ型:(symbol, integer)
-    if @drink_stock[stock_position][1] >= 1 && @drink_stock[stock_position]
+    if stock_position_condition(stock_position) == 1 && @drink_stock[stock_position][1] >= count
       @drink_stock[stock_position][1] -= count
     else
       return false
     end
   end
   def drink_delete(stock_position)
-    if @drink_stock[stock_position]
-      @drink_stock[stock_position] == []
+    if stock_position_condition(stock_position)
+      @drink_stock[stock_position] = []
     else
       return false
     end
   end
   def drink_buyable_judgement(stock_position, drink_data, slot_money) # 引数を追加しました! データ型：(symbol, hash *@priduct.drink_data, integer *@insert.slot_money  )
-    if @drink_stock[stock_position]
+    if stock_position_condition(stock_position)
       case @drink_stock[stock_position][1]
       when nil
         return 4
@@ -80,51 +80,35 @@ class Stock
       end
       drink_list << drink_box
     end
-    # [[:A, 1,  "コーラ", 120, 15]...]
-    # "[A] [購入可能] 商品名：コーラ　値段：120円"
-    drink_list.each do |position, status, name, price, count|
-      msg = ""
-      case status
-      when 1
-        msg = "購入可能"
-      when 2
-        msg = "お金不足"
-      when 3
-        msg = "品切れ　"
-      when 4
-        msg = "販売中止"
-      else
-        msg = "エラー　"
+    drink_list
+    # 出力形態 [[:A, 1,  "コーラ", 120, 15]...]
+  end
+  def drink_name(stock_position, drink_data)
+    drink_data[@drink_stock[stock_position][0]][:name]
+  end
+  def drink_price(stock_position, drink_data)
+    drink_data[@drink_stock[stock_position][0]][:price]
+  end
+  def stock_position_condition(stock_position) #追加メソッド　入力されたstock_positionが存在するか判定 true/false
+    if @drink_stock[stock_position].nil?
+      false
+    else
+      case drink_stock[stock_position][1] do
       end
-      puts "[#{position.to_s} #{msg}] 商品名：「#{name}」 価格：#{price}円 数量：#{count}本 "
+      when nil
+        return 3
+      when 0
+        return 2
+      when 1..nil
+        return 1
+      else
+        false
+      end
     end
+    # 1:ドリンクが存在する 1本以上
+    # 2:ドリンクが品切れ 0本
+    # 3:ドリンクが存在しない, 未設定
+    # 4:positionが存在しない
   end
 end
 
-# drink_data = {:d001=>{:name=>"コーラ", :price=>120}, :d002=>{:name=>"水", :price=>100}, :d003=>{:name=>"レッドブル", :price=>200}}
-
-# st = Stock.new(10)
-
-# st.drink_addition(:B, :d002, 5)
-
-# st.drink_addition(:C, :d003, 5)
-
-# st.drink_increase(:A, 3)
-
-# st.drink_decrease(:B, 4)
-
-# st.drink_decrease(:C, 5)
-
-# p "jage test"
-
-# p st.drink_buyable_judgement(:A, drink_data, 150)
-
-# p st.drink_buyable_judgement(:A, drink_data, 50)
-
-# p st.drink_buyable_judgement(:C, drink_data, 150)
-
-# p st.drink_buyable_judgement(:D, drink_data, 150)
-
-# p "test list"
-
-# st.drink_list_creation(drink_data, 150)

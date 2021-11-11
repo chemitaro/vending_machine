@@ -16,7 +16,11 @@ class Insert
     @slot_money += value
   end
   def money_decrease(value)
-    @slot_money -= value
+    if value <= @slot_money
+      @slot_money -= value
+    else
+      false
+    end
   end
   # def money_amount
   #   @slot_money += value(money_increase - money_decrease)

@@ -13,6 +13,20 @@
 #vm_drink_deleateが機能していない、Falseが帰ってくる
 #vm_proceeds_decreaseにて、proceeds_decreaseが機能していない。恐らく変数名の問題
 
+#11/10
+
+#Stock.drink_delete を直しました。
+#MiniTest追加しました。
+
+#追加メソッド 
+#class Stock 
+#   def drink_name(stock_position, drink_data)
+#   def drink_price(stock_position, drink_data)
+#   def stock_position_condition(stock_position) #追加メソッド　入力されたstock_positionが存在するか判定 1:ドリンクある/ 2:品切れ/ 3:ドリンクが存在しない、未設定/ 4:存在しないポジション
+#
+#class Product
+#   def def number_present?(number)# ナンバーが存在するか判定 true/false
+#
 
 require './product'
 require './vending_machine_parts/insert'
