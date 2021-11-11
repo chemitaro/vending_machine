@@ -37,17 +37,14 @@ require './vending_machine_parts/mony_management'
 class VendingMachine
 
   def initialize
-    @my_orders = []
-    #購入品を格納する配列
     @product = Product.new
     @insert = Insert.new
     @salse_management = SalesManagement.new
     slot_number = 0
     loop {
       puts "自動販売機のスロット数を半角数字で入力して下さい"
-      #putsがないと文字が出力されない
       i = gets.chomp
-      if i =~ /^[0-9]+$/
+      if i =~ /^\d$/ && i.to_i > 0
         slot_number = i.to_i
         break
       else
@@ -57,7 +54,10 @@ class VendingMachine
     }
     @stock = Stock.new(slot_number)
     #引数でVMの商品スロット数を指定
+    @my_orders = []
+    #購入品を格納する配列
     mode_selection
+    #初期モードへ移行
   end
 
   def mode_selection
@@ -71,8 +71,8 @@ class VendingMachine
       puts "プログラム終了：4"
 
       user_input = gets.chomp
-      if user_input =~ /\d+/
-        #もし半角数字だったら
+
+      if user_input =~ /^[1-4]$/
         user_input = user_input.to_i
       else
         puts "有効な半角数字を入力して下さい"
@@ -96,13 +96,13 @@ class VendingMachine
 
   def sales_mode
     #商品購入モード
-    @information = "\nいらっしゃいませ！"
+    information = "\nいらっしゃいませ！"
     loop {
       puts "\n\n\n\n------------------------------------------------------------------------"
       puts "---------------------------自動販売機-----------------------------------"
       puts "------------------------------------------------------------------------"
       information_display("sales")
-      #商品表示
+      #salesモードの商品表示
       puts "------------------------------------------------------------------------"
       puts "投入残金額:#{@insert.slot_money}円"
       if @my_orders.length == 0
@@ -110,10 +110,10 @@ class VendingMachine
       else
         puts "購入品：#{@my_orders.join(',')}"
       end
+      #購入品の出力
       puts "--------------------------information display---------------------------"
-      puts @information
+      puts information
       puts "\n------------------------------------------------------------------------"
-
       puts "\n使用方法"
       puts "以下の任意の文字又は数字を入力し、エンターキーを押して下さい"
       puts "お金の投入：任意の金額を半角数字　例.100円を投入するときは 100"
@@ -124,43 +124,40 @@ class VendingMachine
       user_input = gets.chomp
 
       case user_input
-      when /\d+/
+      when /^\d+$/
         #半角数字が1文字以上だったら
-        @information = deposit(user_input)
+        information = deposit(user_input)
       when "refund"
-        @information = return_money
+        information = return_money
         #返金処理
       when /^[A-Z]$/
         #アルファベットだったら
-        @information = push_button(user_input)
+        information = push_button(user_input)
         #購入処理
       when "end"
         break
       else
-        @information = "\n有効な入力では有りません"
+        information = "\n有効な入力では有りません"
       end
     }
   end
 
   def admin_mode
     #管理者モード
-    @information = "\n自動販売機管理モード中"
+    information = "\n自動販売機管理モード中"
     loop {
       puts "\n\n\n\n---------------------------自動販売機-----------------------------------"
       information_display("admin")
-      #自販機情報
-      #購入可能かどうかも出力している、要改善
+      #adminモードのの商品表示
       puts "------------------------------------------------------------------------"
       puts "自動販売機内金額：#{@salse_management.proceeds}円"
       puts "------------------------------------------------------------------------"
-
       puts "\n\n----------------------------商品情報------------------------------------"
       product_information_display
-      #商品情報
+      #データベースの商品情報
       puts "--------------------------information display---------------------------"
-      puts @information
+      puts information
       puts "\n------------------------------------------------------------------------"
-
       puts "\n任意の数字を入力してエンターキーを押して下さい"
       puts "自販機への商品割当：1"
       puts "自販機商品の本数補充：2"
@@ -170,46 +167,45 @@ class VendingMachine
       puts "管理モードの終了：6"
 
       user_input = gets.chomp
-      if user_input =~ /\d+/
+
+      if user_input =~ /^[1-6]$/
         user_input = user_input.to_i
       else
-        @information = "\n有効な半角数字を入力して下さい"
+        information = "\n有効な半角数字を入力して下さい"
         next
       end
 
       case user_input
       when 1
-        @information = vm_drink_allocation
+        information = vm_drink_allocation
       when 2
-        @information = vm_drink_increase
+        information = vm_drink_increase
       when 3
-        @information = vm_drink_decrease
+        information = vm_drink_decrease
       when 4
-        @information = vm_drink_deleate
+        information = vm_drink_deleate
       when 5
-        @information = vm_proceeds_decrease
+        information = vm_proceeds_decrease
       when 6
         break
       else
-        @information = "\n有効な入力では有りません"
+        information = "\n有効な入力では有りません"
       end
     }
   end
 
 
   def product_db_mode
-    @information = "\n自動販売機管理モード中"
+    information = "\n自動販売機管理モード中"
     loop {
       puts "\n\n\n\n----------------------------商品情報------------------------------------"
       product_information_display
       #商品情報
       puts "--------------------------information display---------------------------"
-      puts @information
+      puts information
       puts "\n------------------------------------------------------------------------"
-
       puts "\商品情報管理モード"
       puts "任意の数字を入力してエンターキーを押して下さい"
-
       puts "商品の登録：1"
       puts "商品名の変更：2"
       puts "値段の変更：3"
@@ -217,38 +213,40 @@ class VendingMachine
       puts "管理モードの終了：5"
 
       user_input = gets.chomp
-      if user_input =~ /\d+/
+
+      if user_input =~ /^[1-5]$/
         user_input = user_input.to_i
       else
-        @information = "\n有効な半角数字を入力して下さい"
+        information = "\n有効な半角数字を入力して下さい"
         next
       end
 
       case user_input
       when 1
-        @information = db_drink_data_register
+        information = db_drink_data_register
       when 2
-        @information = db_change_name
+        information = db_change_name
       when 3
-        @information = db_change_price
+        information = db_change_price
       when 4
-        @information = db_drink_data_delete
+        information = db_drink_data_delete
       when 5
         break
       else
-        @information = "\n有効な入力では有りません"
+        information = "\n有効な入力では有りません"
       end
     }
   end
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
   def information_display(user)
-    #putsで情報出力
+    #putsで商品情報出力
     d = @product.drink_data
     s = @insert.slot_money
-    @drink_list = @stock.drink_list_creation(d, s)
+    drink_list = @stock.drink_list_creation(d, s)
+
     case user
     when "sales"
-      @drink_list.each do |position, status, name, price, count|
+      drink_list.each do |position, status, name, price, count|
         msg = ""
         case status
         when 1
@@ -267,7 +265,7 @@ class VendingMachine
         puts "#{position.to_s} [#{msg}] 商品名:#{name} 価格：#{price}円 数量：#{count}本 "
       end
     when "admin"
-      @drink_list.each do |position, status, name, price, count|
+      drink_list.each do |position, status, name, price, count|
         puts "#{position.to_s} 商品名:#{name} 価格：#{price}円 数量：#{count}本 "
       end
     end
@@ -306,7 +304,6 @@ class VendingMachine
 
   def push_button(user_input)
     #購入処理
-    #要改善
     user_input = user_input.to_sym
     puts "開始"
     @stock.drink_buyable_judgement(user_input, @product.drink_data, @insert.slot_money)
@@ -315,17 +312,16 @@ class VendingMachine
       #購入可能なら
       @stock.drink_decrease(user_input, 1)
       #本数を減らす
-      price = @product.drink_data[@stock.drink_stock[user_input][0]][:price]
-      #price = drink_price(user_input, @product.drink_data)
-      #金額取得、要改善
+      price = @stock.drink_price(user_input, @product.drink_data)
+      #金額取得
       @insert.money_decrease(price)
       #投入金額を商品代金分減らす
       @salse_management.proceeds_increase(price)
-
+      #売上金に加算
       @my_orders << "#{@product.drink_data[@stock.drink_stock[user_input][0]][:name]}"
       #購入品名を購入品一覧に格納
-      "\nガコン！ #{@product.drink_data[@stock.drink_stock[user_input][0]][:name]}を購入しました" + return_money
-      #"\nガコン！　#{@product.drink_name(user_input, @product.drink_data)}を購入"
+      "\nガコン！　#{@stock.drink_name(user_input, @product.drink_data)}を購入しました" + return_money
+      #釣り銭も出力
     when 2
       "\n投入代金が不足しています"
     when 3
@@ -336,7 +332,7 @@ class VendingMachine
       "\n存在しない商品ボタンです"
     end
   end
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
   def vm_drink_allocation
     #自販機への商品割当
@@ -348,10 +344,10 @@ class VendingMachine
     loop {
       puts "割り当てる自販機ボタンのアルファベットを半角大文字で入力して下さい、入力を終了する場合は end を入力して下さい"
       user_input_1 = gets.chomp
+
       if user_input_1 == "end"
         return "\n入力を終了しました"
       elsif user_input_1 !~ /^[A-Z]$/
-        #もしアルファベットではなかったら
         puts "有効なアルファベットでは有りません"
         next
       end
@@ -366,17 +362,14 @@ class VendingMachine
       end
 
       user_input_2 = user_input_2.to_sym
-      #シンボルに変換
 
       puts "補充する本数を半角数字で入力して下さい"
       user_input_3 = gets.chomp
       if user_input_3 !~ /^\d+$/
-        #もし数字ではなかったら
         puts "有効な数字では有りません"
         next
       end
       user_input_3 = user_input_3.to_i
-
       break
     }
 
@@ -394,21 +387,23 @@ class VendingMachine
     loop {
       puts "補充する商品の自販機ボタンアルファベットを半角大文字で入力して下さい、入力を終了する場合は end を入力して下さい"
       user_input_1 = gets.chomp
+
       if user_input_1 == "end"
         return "\n入力を終了しました"
       elsif user_input_1 !~ /^[A-Z]$/
-        #もしアルファベットではなかったら
         puts "有効なアルファベットでは有りません"
         next
       end
       user_input_1 = user_input_1.to_sym
       puts "補充する本数を半角数字で入力して下さい"
+
       user_input_2 = gets.chomp
+
       if user_input_2 !~ /^\d+$/
-        #もし数字ではなかったら
         puts "有効な数字では有りません"
         next
       end
+
       user_input_2 = user_input_2.to_i
       break
     }
@@ -426,18 +421,18 @@ class VendingMachine
     loop {
       puts "本数を減らす商品の自販機ボタンアルファベットを半角大文字で入力して下さい、入力を終了する場合は end を入力して下さい"
       user_input_1 = gets.chomp
+
       if user_input_1 == "end"
         return "\n入力を終了しました"
       elsif user_input_1 !~ /^[A-Z]$/
-        #もしアルファベットではなかったら
         puts "有効なアルファベットでは有りません"
         next
       end
       user_input_1 = user_input_1.to_sym
       puts "減らす本数を半角数字で入力して下さい"
       user_input_2 = gets.chomp
+
       if user_input_2 !~ /^\d+$/
-        #もし数字ではなかったら
         puts "有効な数字では有りません"
         next
       end
@@ -458,12 +453,9 @@ class VendingMachine
       puts "削除する商品の自販機ボタンアルファベットを半角大文字で入力して下さい、入力を終了する場合は end を入力して下さい"
       user_input = gets.chomp
 
-      p @stock.stock_position_condition(user_input.to_sym)
-
       if user_input == "end"
         return "\n入力を終了しました"
       elsif user_input !~ /^[A-Z]$/
-        #もしアルファベットではなかったら
         puts "有効なアルファベットでは有りません"
         next
       end
@@ -489,7 +481,7 @@ class VendingMachine
       #全額回収機能のみ
     end
   end
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+  #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
   def db_drink_data_register
     #商品の登録
     user_input_1 = ""
@@ -498,6 +490,7 @@ class VendingMachine
     loop {
       puts "商品番号を入力して下さい 例：d001 \n入力を終了する場合は end を入力して下さい"
       user_input_1 = gets.chomp
+
       if user_input_1 == "end"
         return "\n入力を終了しました"
       elsif user_input_1 !~ /^d\d{3}$/
@@ -505,17 +498,18 @@ class VendingMachine
         next
       end
       user_input_1 = user_input_1.to_sym
-
       puts "登録する商品名を入力して下さい"
       user_input_2 = gets.chomp
-      if user_input_2 !~ /\S+/
-        puts "商品名を入力して下さい"
+
+      if user_input_2 !~ /^\S+$/
+        puts "空白文字は使用できません"
         next
       end
 
       puts "登録する商品の値段を入力して下さい"
       user_input_3 = gets.chomp
-      if user_input_3 !~ /\d+/
+
+      if user_input_3 !~ /^\d+$/
         puts "有効な数字では有りません"
         next
       end
@@ -537,6 +531,7 @@ class VendingMachine
     loop {
       puts "商品番号を入力して下さい 例：d001 \n入力を終了する場合は end を入力して下さい"
       user_input_1 = gets.chomp
+
       if user_input_1 == "end"
         return "\n入力を終了しました"
       elsif user_input_1 !~ /^d\d{3}$/
@@ -544,11 +539,11 @@ class VendingMachine
         next
       end
       user_input_1 = user_input_1.to_sym
-
       puts "変更後の商品名を入力して下さい"
       user_input_2 = gets.chomp
-      if user_input_2 !~ /\S+/
-        puts "商品名を入力して下さい"
+
+      if user_input_2 !~ /^\S+$/
+        puts "空白文字は使用できません"
         next
       end
       break
@@ -567,6 +562,7 @@ class VendingMachine
     loop {
       puts "値段の変更をする商品番号を入力して下さい 例：d001 \n入力を終了する場合は end を入力して下さい"
       user_input_1 = gets.chomp
+
       if user_input_1 == "end"
         return　"\n入力を終了しました"
       elsif user_input_1 !~ /^d\d{3}$/
@@ -574,10 +570,10 @@ class VendingMachine
         next
       end
       user_input_1 = user_input_1.to_sym
-
       puts "変更後の値段を入力して下さい"
       user_input_2 = gets.chomp
-      if user_input_2 !~ /\d+/
+
+      if user_input_2 !~ /^\d+$/
         puts "有効な数字では有りません"
         next
       end
@@ -597,6 +593,7 @@ class VendingMachine
     loop {
       puts "削除する商品番号を入力して下さい 例：d001 \n入力を終了する場合は end を入力して下さい"
       user_input = gets.chomp
+
       if user_input == "end"
         return "\n入力を終了しました"
       elsif user_input !~ /^d\d{3}$/
