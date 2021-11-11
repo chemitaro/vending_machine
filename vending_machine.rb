@@ -18,8 +18,8 @@
 #Stock.drink_delete を直しました。
 #MiniTest追加しました。
 
-#追加メソッド 
-#class Stock 
+#追加メソッド
+#class Stock
 #   def drink_name(stock_position, drink_data)
 #   def drink_price(stock_position, drink_data)
 #   def stock_position_condition(stock_position) #追加メソッド　入力されたstock_positionが存在するか判定 1:ドリンクある/ 2:品切れ/ 3:ドリンクが存在しない、未設定/ 4:存在しないポジション
@@ -292,7 +292,7 @@ class VendingMachine
       "\n#{user_input}円を投入しました"
     else
       #使えなかったら使えないメッセージを出力
-      "\n有効な貨幣では有りません、以下の貨幣が使用できます\n硬貨:10円, 50円, 100円, 500円\n紙幣:1000円"
+      "\n有効な貨幣では有りません、以下の貨幣が使用できます\n硬貨:10円, 50円, 100円, 500円\n紙幣:1000円\n#{user_input}円を返却しました"
     end
   end
 
@@ -324,10 +324,8 @@ class VendingMachine
 
       @my_orders << "#{@product.drink_data[@stock.drink_stock[user_input][0]][:name]}"
       #購入品名を購入品一覧に格納
-
-      "\nガコン！ #{@product.drink_data[@stock.drink_stock[user_input][0]][:name]}を購入しました"
+      "\nガコン！ #{@product.drink_data[@stock.drink_stock[user_input][0]][:name]}を購入しました" + return_money
       #"\nガコン！　#{@product.drink_name(user_input, @product.drink_data)}を購入"
-
     when 2
       "\n投入代金が不足しています"
     when 3
@@ -335,7 +333,7 @@ class VendingMachine
     when 4
       "\n販売を停止しています、有効なアルファベットを入力して下さい"
     else
-      "\nerror"
+      "\n存在しない商品ボタンです"
     end
   end
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -361,14 +359,14 @@ class VendingMachine
 
       puts "商品番号を入力して下さい 例：d001"
       user_input_2 = gets.chomp
-      if user_input_2 !~ /^d\d{3}$/
+      if user_input_2 !~ /^d\d{3}$/ || @product.number_present?(user_input_2.to_sym) == false
         #もしdと半角数字3桁ではなかったら
         puts "有効な入力情報では有りません"
         next
       end
+
       user_input_2 = user_input_2.to_sym
       #シンボルに変換
-
 
       puts "補充する本数を半角数字で入力して下さい"
       user_input_3 = gets.chomp
@@ -378,6 +376,7 @@ class VendingMachine
         next
       end
       user_input_3 = user_input_3.to_i
+
       break
     }
 
@@ -458,6 +457,9 @@ class VendingMachine
     loop {
       puts "削除する商品の自販機ボタンアルファベットを半角大文字で入力して下さい、入力を終了する場合は end を入力して下さい"
       user_input = gets.chomp
+
+      p @stock.stock_position_condition(user_input.to_sym)
+
       if user_input == "end"
         return "\n入力を終了しました"
       elsif user_input !~ /^[A-Z]$/
@@ -472,7 +474,7 @@ class VendingMachine
     if @stock.drink_delete(user_input) == false
       "有効な入力では有りません"
     else
-      "\n#{user_input_1.to_s}の商品を削除しました"
+      "\n#{user_input.to_s}の商品を削除しました"
     end
   end
 
