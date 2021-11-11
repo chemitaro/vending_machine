@@ -17,7 +17,7 @@ class SalseManagementTest < Minitest::Test
     @salse_management.proceeds_decrease(100)
     assert_equal @salse_management.proceeds, 400
   end
-  def test_proceeds_decrease
+  def test_proceeds_decrease_false
     @salse_management.proceeds_increase(100)
     refute @salse_management.proceeds_decrease(500)
     assert_equal @salse_management.proceeds, 100
