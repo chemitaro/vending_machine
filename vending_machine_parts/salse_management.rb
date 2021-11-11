@@ -7,6 +7,10 @@ class SalesManagement
     @proceeds += value
   end
   def proceeds_decrease(value)
-    @slot_money -= value
+    if @proceeds >= value
+      @slot_money -= value
+    else
+      false
+    end
   end
 end
