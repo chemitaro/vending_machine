@@ -1,5 +1,6 @@
 class Product
   attr_reader :drink_data
+
   def initialize
     @drink_data = {}
     #{number: { name: name, price: price }}
@@ -7,6 +8,7 @@ class Product
     drink_data_register(:d002, "水", 100)
     drink_data_register(:d003, "レッドブル", 200)
   end
+
   def drink_data_register(number, name, price) # 引数のデータ型　(symbol, string, integer)
     if number_present?(number)  #上書き防止、すでにナンバーが登録されていたら戻り値としてfalseを返します。
       return false
@@ -14,6 +16,7 @@ class Product
       @drink_data[number] = {name: name, price: price}
     end
   end
+
   def change_name(number, name) # 引数のデータ型　(symbol, string)
     if number_present?(number) # numbreがすでにあるか検索　無ければ、戻り値としてfalseを返します。
       @drink_data[number][:name] = name
@@ -21,6 +24,7 @@ class Product
       return false
     end
   end
+
   def change_price(number, price)# 引数のデータ型　(symbol, integer)
     if number_present?(number) # numbreがすでにあるか検索　無ければ、戻り値としてfalseを返します。
       @drink_data[number][:price] = price
@@ -28,6 +32,7 @@ class Product
       return false
     end
   end
+
   def drink_data_delete(number)# 引数のデータ型　(symbol)
     if number_present?(number) # numbreがすでにあるか検索　無ければ、戻り値としてfalseを返します。
       @drink_data.delete(number)
@@ -35,6 +40,7 @@ class Product
       return false
     end
   end
+
   def number_present?(number)# ナンバーが存在するか判定 true/false
     if @drink_data[number]
       true

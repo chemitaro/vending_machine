@@ -1,5 +1,5 @@
 require 'minitest/autorun'
-require '../vending_machine_parts/stok.rb'
+require '../vending_machine_parts/stock.rb'
 
 class StockTest < Minitest::Test
   def setup
