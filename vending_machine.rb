@@ -236,7 +236,7 @@ class VendingMachine
     }
   end
 
-  def deposit(user_input) #投入されたお金が使用できるか判断
+  def deposit(user_input) #お金の投入
     user_input = user_input.to_i
     if @insert.money_judgement(user_input)
       @insert.money_increase(user_input)
@@ -252,18 +252,16 @@ class VendingMachine
     return text
   end
 
-
   def push_button(user_input) #購入処理
     user_input = user_input.to_sym
     puts "開始"
-    @stock.drink_buyable_judgement(user_input, @product.drink_data, @insert.slot_money)
     case @stock.drink_buyable_judgement(user_input, @product.drink_data, @insert.slot_money)
     when 1
       @stock.drink_decrease(user_input, 1)
       price = @stock.drink_price(user_input, @product.drink_data)
       @insert.money_decrease(price)
       @salse_management.proceeds_increase(price)
-      @my_orders << "#{@product.drink_data[@stock.drink_stock[user_input][0]][:name]}"
+      @my_orders << "#{@stock.drink_name(user_input, @product.drink_data)}"
       "\nガコン！　#{@stock.drink_name(user_input, @product.drink_data)}を購入しました" + return_money
     when 2
       "\n投入代金が不足しています"
@@ -401,7 +399,7 @@ class VendingMachine
     }
     p user_input
     if @stock.drink_delete(user_input) == false
-      "有効な入力では有りません"
+      "\n有効な入力では有りません"
     else
       "\n#{user_input.to_s}の商品を削除しました"
     end
@@ -541,7 +539,7 @@ class VendingMachine
         "\n商品番号:#{user_input}を削除しました"
       end
     else
-      "自販機に割り当てている商品のため、削除できません"
+      "\n自販機に割り当てている商品のため、削除できません"
     end
   end
 end
